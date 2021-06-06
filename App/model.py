@@ -24,7 +24,6 @@
  * Dario Correal - Version inicial
  """
 
-
 import config as cf
 from DISClib.ADT import list as lt
 from DISClib.ADT import map as mp
@@ -37,6 +36,8 @@ from DISClib.Algorithms.Graphs import scc
 from DISClib.Algorithms.Graphs import prim
 from DISClib.Algorithms.Sorting import mergesort
 from math import pi, sin, cos, asin
+from App.get_ip import get_location
+import ipapi.ipapi as ipapi
 assert cf
 
 """
@@ -501,9 +502,29 @@ class landing_points:
         respuesta = "\n".join(["{}: {} Mbps".format(*args) for args in respuesta['elements']])
         return respuesta, has_server
             
+    def nearest_landing_point(self, IP):
+        latitude, longitude = get_location(IP)
+        country = ipapi.location(IP)['country_name']
+        city_it = ll_it.newIterator(mp.get(self.point_country, country)['value'])
+        minimum = 0, float('inf')
+        while ll_it.hasNext(city_it):
+            city = ll_it.next(city_it)
+            dist = self.haversine(latitude, longitude, city)
+            if dist < minimum[1]:
+                minimum = city, dist
+        return minimum
 
     def req_7(self, IP1, IP2):
-        pass
+        vertexA, distA = self.nearest_landing_point(IP1)
+        vertexB, distB = self.nearest_landing_point(IP2)
+        search = dij.Dijkstra(self.connections_map, vertexA)
+        path = dij.pathTo(search, vertexB)
+        path = self.path_str(path)
+        appendA = "{} - {}: {} km\n".format(IP1, self.id_to_city(vertexA), round(distA, 2))
+        appendB = "\n{} - {}: {} km".format(self.id_to_city(vertexB), IP2, round(distB ,2))
+        path = appendA + path + appendB
+        dist = dij.distTo(search, vertexB) + distA + distB
+        return path, round(dist, 2)
 
 # Funciones para agregar informacion al catalogo
 
@@ -515,4 +536,4 @@ class landing_points:
 
 if __name__ == '__main__':
     ld = landing_points("Data/landing_points.csv", "Data/connections.csv","Data/countries.csv")
-    print(*ld.req_6("South Africa", "2Africa"))
+    print(*ld.req_7("8.8.8.8", "165.132.67.89"))
