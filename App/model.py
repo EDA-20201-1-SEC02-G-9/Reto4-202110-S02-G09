@@ -46,6 +46,9 @@ assert cf
 Se define la estructura de un catálogo de videos. El catálogo tendrá dos listas, una para los videos, otra para las categorias de
 los mismos.
 """
+
+toggle_capitales = True
+
 # Clasificación de datos
 
 def special_split(line:str):
@@ -357,7 +360,8 @@ class landing_points:
         self.connections_map = gp.newGraph(size=lt.size(self.connections_list), directed=True)
         self.add_vertices()
         self.add_edges()
-        self.add_capitals_edges()
+        if toggle_capitales:
+            self.add_capitals_edges()
 
     def add_country_cable(self, cable, i):
         name = lt.getElement(cable, 3)
@@ -395,7 +399,8 @@ class landing_points:
         self.mas_grande, self.cable_bandwith) = None, None, None, None, None, None, None, None, None, None
         self.open_countries(filepath_countries)
         self.open_points(filepath_points)
-        self.add_capitals_landing_points()
+        if toggle_capitales:
+            self.add_capitals_landing_points()
         self.assign_points_to_countries()
         self.open_connections(filepath_connections)
         self.draw_connections()
@@ -569,7 +574,7 @@ class landing_points:
             dist = self.haversine(latitude, longitude, city)
             if dist < minimum[1]:
                 minimum = city, dist
-        graphing.graph_line(latitude, longitude, IP, minimum[0])
+        graphing.graph_line_7(latitude, longitude, IP, minimum[0])
         return minimum
 
     def req_7(self, IP1, IP2):
