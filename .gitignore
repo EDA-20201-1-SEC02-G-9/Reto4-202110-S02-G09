@@ -140,3 +140,5 @@ dmypy.json
 !Data/GoodReads/book_reviews.csv
 
 .vim
+
+Data/
