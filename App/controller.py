@@ -20,19 +20,44 @@
  * along withthis program.  If not, see <http://www.gnu.org/licenses/>.
  """
 
-import config as cf
-import model
-import csv
 
+import config as cf
+import App.model as model
+from DISClib.ADT import graph as gp
+from DISClib.ADT import map as mp
 
 """
 El controlador se encarga de mediar entre la vista y el modelo.
 """
 
-# Inicialización del Catálogo de libros
-
 # Funciones para la carga de datos
 
-# Funciones de ordenamiento
+def cargar_datos():
+    data = model.landing_points("Data/landing_points.csv", "Data/connections.csv","Data/countries.csv")
+    landing_points = gp.numVertices(data.connections_map)
+    connections = gp.numEdges(data.connections_map) // 2
+    countries = mp.size(data.countries)
+    return data, landing_points, connections, countries
 
-# Funciones de consulta sobre el catálogo
+# Requerimientos
+
+def req_1(data: model.landing_points, lp1, lp2):
+    return data.req_1(lp1, lp2)
+
+def req_2(data: model.landing_points):
+    return data.req_2()
+
+def req_3(data: model.landing_points, countryA, countryB):
+    return data.req_3(countryA, countryB)
+
+def req_4(data: model.landing_points):
+    return data.req_4()
+
+def req_5(data: model.landing_points, lp):
+    return data.req_5(lp)
+
+def req_6(data: model.landing_points, cable, server):
+    return data.req_6(server, cable)
+
+def req_7(data: model.landing_points, IP1, IP2):
+    return data.req_7(IP1, IP2)
